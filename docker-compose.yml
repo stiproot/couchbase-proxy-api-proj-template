@@ -1,0 +1,33 @@
+version: "2"
+services:
+
+  cb-proxy-api-db:
+    networks:
+      - cb-proxy-api
+    build: ./src/db
+    ports:
+      - 8091-8097:8091-8097
+      - 9123:9123
+      - 11207:11207
+      - 11210:11210
+      - 11280:11280
+      - 18091-18097:18091-18097
+    # volumes:
+    #   - couchbase-data:/opt/couchbase/var/lib/couchbase
+
+  cb-proxy-api:
+    networks:
+      - cb-proxy-api
+    depends_on:
+      - cb-proxy-api-db
+    build: ./src
+    ports:
+      - 8005:8001
+    environment:
+      - COUCHBASE_HOST=cb-proxy-api-db
+      - COUCHBASE_USERNAME=root
+      - COUCHBASE_PASSWORD=R007__..
+
+networks:
+  cb-proxy-api:
+    driver: bridge
